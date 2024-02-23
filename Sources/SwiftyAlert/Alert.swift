@@ -95,6 +95,18 @@ public struct Alert<Item> {
     }
   }
 
+  public func actions(_ actions: [Alert<Item>.Action]) -> Self {
+    Alert(style: style, popoverPresentationHandler: popoverPresentationHandler) { alert, continuation in
+      modifier?(alert, continuation)
+      for action in actions {
+        let alertAction = UIAlertAction(title: action.title, style: action.style) { _ in
+          continuation?.resume(returning: action.item)
+        }
+        alert.addAction(alertAction)
+      }
+    }
+  }
+
   @available(iOS 16.0, tvOS 16.0, *)
   public func severity(_ severity: UIAlertControllerSeverity) -> Self {
     Alert(style: style, popoverPresentationHandler: popoverPresentationHandler) {
